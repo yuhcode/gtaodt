@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ODT Chat</title>
+    <style>
+        body {
+            color: #bf00ff;
+            background-color: black;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            color: #bf00ff;
+        }
+
+        #chat {
+            width: 80%;
+            height: 60vh;
+            background-color: #222;
+            color: #bf00ff;
+            overflow-y: auto;
+            padding: 10px;
+            border: 2px solid #bf00ff;
+            margin-bottom: 20px;
+        }
+
+        #messageInput {
+            width: 80%;
+            padding: 10px;
+            border: 2px solid #bf00ff;
+            background-color: #111;
+            color: #bf00ff;
+            margin-bottom: 10px;
+        }
+
+        button {
+            color: #bf00ff;
+            background-color: black;
+            border: 2px solid #bf00ff;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>ODT Anonymous Chat</h1>
+    <div id="chat"></div>
+    <input type="text" id="messageInput" placeholder="Type your message">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        const ws = new WebSocket('ws://192.168.188.199:8443');
+        const chatDiv = document.getElementById('chat');
+        const messageInput = document.getElementById('messageInput');
+
+        ws.onmessage = function(event) {
+            const messageElement = document.createElement('div');
+            messageElement.textContent = event.data;
+            chatDiv.appendChild(messageElement);
+            chatDiv.scrollTop = chatDiv.scrollHeight; // Scroll to bottom
+        };
+
+        function sendMessage() {
+            const message = messageInput.value;
+            if (!message) return;
+            ws.send(message);
+            messageInput.value = '';
+        }
+    </script>
+</body>
+</html>
